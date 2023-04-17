@@ -1,5 +1,5 @@
 import numpy as np
-
+import dpnp
 from mcpi_demo.impl.arg_parser import parse_args
 
 RUN_VERSION = parse_args().variant
@@ -15,8 +15,10 @@ elif RUN_VERSION == "Numba-DPEX".casefold():
 
 
 def monte_carlo_pi(batch_size, n_batches):
-    s = np.empty(n_batches)
+    s = 0.
     for i in range(n_batches):
         print(f"Batch #{i}")
-        s[i] = monte_carlo_pi_batch(batch_size)
-    return s.mean(), s.std()
+        a = dpnp.random.random(size=batch_size)
+        b = dpnp.random.random(size=batch_size)
+        s += monte_carlo_pi_batch(a, b , batch_size)
+    return s/n_batches
